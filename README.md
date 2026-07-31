@@ -2,7 +2,7 @@
 
 ### ENG-1904 — Bypass Topup With 0.5 USD
 **Status:** Done
-  - **Fixed** Team QA Prod User Only Can Recharge 0.5 USD to Bypass Costly Recharges For Testing Purpose.
+  - **Fixed** `Team QA Prod Automation's Workspace` User Only Can Recharge 0.5 USD to Bypass Costly Recharges For Testing Purpose.
 
 ### ENG-1823 — RPM Improvement, Audio and Image To Use Key's RPM
 **Status:** Done
