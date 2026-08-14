@@ -1,13 +1,11 @@
-## Done Items
-- BILL-422: Suppress KeyAbusePatternDetected alerts for automation users
+## ✅ Done
 
-- BILL-140: token-service-consume-the-stored-flexai-price-from-artifacts-instead
+- **BILL-422** — Suppress `KeyAbusePatternDetected` alerts for automation users
+- **BILL-140** — Token service: consume stored FlexAI price from artifacts instead
+- **BILL-75** — Fix stale tax zone on postpaid invoice charges after a billing cycle
+- **BILL-148** — Activate postpaid usage billing (Layer 1 wire loop) — enable flags in staging
 
-- BILL-75: billing-postpaid-invoice-charges-stale-tax-zone-after-a-billing
+## 🔄 In Progress / In Review
 
-- BILL-148: activate-postpaid-usage-billing-layer-1-wire-loop-enable-flags-staging
-
-## In Progress or In Review Items
-- BILL-150: revenue tracker pending optimisations
-
-- BILL-88: put-request-postpaid-usage-option-in-the-billing-page-behind-feature
+- **BILL-150** — Revenue tracker: pending optimizations
+- **BILL-88** — Add postpaid usage option to billing page (behind feature flag)
