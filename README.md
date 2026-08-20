@@ -2,7 +2,7 @@
 
 ## Week 3
 
-## ✅ Completed
+### ✅ Completed
 
 | Ticket | Description |
 |:---|:---|
@@ -13,7 +13,7 @@
 
 ---
 
-## 🔍 In Code Review
+### 🔍 In Code Review
 
 | Ticket | Description |
 |:---|:---|
@@ -21,7 +21,7 @@
 
 ---
 
-## 🚧 In Progress
+### 🚧 In Progress
 
 | Ticket | Description |
 |:---|:---|
@@ -32,42 +32,28 @@
 
 ## Week 2
 
-## ✅ Done
+### ✅ Done
 
-- **BILL-422** — Suppress `KeyAbusePatternDetected` alerts for automation users
-- **BILL-140** — Token service: consume stored FlexAI price from artifacts instead
-- **BILL-75** — Fix stale tax zone on postpaid invoice charges after a billing cycle
-- **BILL-148** — Activate postpaid usage billing (Layer 1 wire loop) — enable flags in staging
-- **BILL-150** — Revenue tracker: pending optimizations
-- **BILL-88** — Add postpaid usage option to billing page (behind feature flag)
+| Ticket | Description |
+|:---|:---|
+| [![BILL-422](https://img.shields.io/badge/BILL--422-done-brightgreen)](#) | Suppress `KeyAbusePatternDetected` alerts for automation users. |
+| [![BILL-140](https://img.shields.io/badge/BILL--140-done-brightgreen)](#) | Token service: consume stored FlexAI price from artifacts instead. |
+| [![BILL-75](https://img.shields.io/badge/BILL--75-done-brightgreen)](#) | Fix stale tax zone on postpaid invoice charges after a billing cycle. |
+| [![BILL-148](https://img.shields.io/badge/BILL--148-done-brightgreen)](#) | Activate postpaid usage billing (Layer 1 wire loop) — enable flags in staging. |
+| [![BILL-150](https://img.shields.io/badge/BILL--150-done-brightgreen)](#) | Revenue tracker: pending optimizations. |
+| [![BILL-88](https://img.shields.io/badge/BILL--88-done-brightgreen)](#) | Add postpaid usage option to billing page (behind feature flag). |
+
+---
 
 ## Week 1
 
-### ENG-1904 — Bypass Topup With 0.5 USD
-**Status:** Done
-  - **Fixed** `Team QA Prod Automation's Workspace` User Only Can Recharge 0.5 USD to Bypass Costly Recharges For Testing Purpose.
+### ✅ Done
 
-### ENG-1823 — RPM Improvement, Audio and Image To Use Key's RPM
-**Status:** Done
-  - **Fixed** Audio and image endpoints now read the key's configured `rpm_limit` instead of falling back to the tier-default constant of 100 RPM. Elevated quotas set by admins now apply uniformly across chat, audio, and image requests on a shared key.
-
-### ENG-1860 — Admin UI Shows Archived Orgs
-**Status:** Done — Fixed it
-  - **Fixed in Admin UI** Admin -> Users Now Don't Show Archived Orgs and View is Much Cleaner Now.
-
-### ENG-1903 — Admin UI Orgs Show Hardcoded 100 Data
-**Status:** Done — Added pagination now
-  - **Fixed** Admin Orgs Now is Paginated Giving Better User Experience
-
-### ENG-1691
-**Status:** Done
-
-- **Current Status:** https://tokens.flex.ai/admin
-- **Bug:** https://github.com/sray-flex-ai/ENG_1691_Data
-- **Fixed Status:** https://tokens-dev.flexsystems.ai/admin
-
-### BILL-149 — Billing and RPM Test Automation
-**Status:** Done
-  - **Current Status** https://github.com/flexaihq/automation/actions/workflows/token-service-billing-rpm-tests.yml
-  - **Sample Run** https://github.com/flexaihq/automation/actions/runs/30251555196/job/89930512176#logs
-  - **Sample Test Status** test_partial_refund_reduces_balance_by_exactly_the_refunded_amount
+| Ticket | Description |
+|:---|:---|
+| [![ENG-1904](https://img.shields.io/badge/ENG--1904-done-brightgreen)](#) | **Bypass Topup With 0.5 USD** — Fixed: `Team QA Prod Automation's Workspace` User Only Can Recharge 0.5 USD to Bypass Costly Recharges For Testing Purpose. |
+| [![ENG-1823](https://img.shields.io/badge/ENG--1823-done-brightgreen)](#) | **RPM Improvement, Audio and Image To Use Key's RPM** — Audio and image endpoints now read the key's configured `rpm_limit` instead of falling back to the tier-default constant of 100 RPM. Elevated quotas set by admins now apply uniformly across chat, audio, and image requests on a shared key. |
+| [![ENG-1860](https://img.shields.io/badge/ENG--1860-done-brightgreen)](#) | **Admin UI Shows Archived Orgs** — Fixed it: Admin -> Users Now Don't Show Archived Orgs and View is Much Cleaner Now. |
+| [![ENG-1903](https://img.shields.io/badge/ENG--1903-done-brightgreen)](#) | **Admin UI Orgs Show Hardcoded 100 Data** — Added pagination now: Admin Orgs Now is Paginated Giving Better User Experience. |
+| [![ENG-1691](https://img.shields.io/badge/ENG--1691-done-brightgreen)](#) | Current Status: [tokens.flex.ai/admin](https://tokens.flex.ai/admin)<br>Bug: [ENG_1691_Data](https://github.com/sray-flex-ai/ENG_1691_Data)<br>Fixed Status: [tokens-dev.flexsystems.ai/admin](https://tokens-dev.flexsystems.ai/admin) |
+| [![BILL-149](https://img.shields.io/badge/BILL--149-done-brightgreen)](#) | **Billing and RPM Test Automation** — Current Status: [workflow](https://github.com/flexaihq/automation/actions/workflows/token-service-billing-rpm-tests.yml)<br>Sample Run: [logs](https://github.com/flexaihq/automation/actions/runs/30251555196/job/89930512176#logs)<br>Sample Test Status: `test_partial_refund_reduces_balance_by_exactly_the_refunded_amount` |
