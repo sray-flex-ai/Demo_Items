@@ -17,14 +17,14 @@
   - **Fixed** Admin Orgs Now is Paginated Giving Better User Experience
 
 ### ENG-1691
-**Status:** In Progress
+**Status:** Done
 
 - **Current Status:** https://tokens.flex.ai/admin
 - **Bug:** https://github.com/sray-flex-ai/ENG_1691_Data
 - **Fixed Status:** https://tokens-dev.flexsystems.ai/admin
 
 ### BILL-149 — Billing and RPM Test Automation
-**Status:** In Progress
+**Status:** Done
   - **Current Status** https://github.com/flexaihq/automation/actions/workflows/token-service-billing-rpm-tests.yml
   - **Sample Run** https://github.com/flexaihq/automation/actions/runs/30251555196/job/89930512176#logs
   - **Sample Test Status** test_partial_refund_reduces_balance_by_exactly_the_refunded_amount
