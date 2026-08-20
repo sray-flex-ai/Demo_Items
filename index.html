@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Weekwise Tickets</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f7f8fa;
+    --surface: #ffffff;
+    --surface-hover: #f1f3f5;
+    --border: #e3e6ea;
+    --text: #1a1d23;
+    --text-muted: #6b7280;
+    --accent: #4f46e5;
+    --accent-soft: #eef2ff;
+    --green-bg: #e7f8ee;
+    --green-text: #157347;
+    --green-border: #a6e6c1;
+    --yellow-bg: #fff8e1;
+    --yellow-text: #92720c;
+    --yellow-border: #f5dd8f;
+    --blue-bg: #e8f0fe;
+    --blue-text: #1a56cc;
+    --blue-border: #a9c7fb;
+    --shadow: 0 1px 2px rgba(16,24,40,0.04), 0 1px 3px rgba(16,24,40,0.06);
+    --radius: 12px;
+  }
+
+  :root:not([data-theme="light"]) {
+    @media (prefers-color-scheme: dark) {
+      --bg: #0f1115;
+      --surface: #171a21;
+      --surface-hover: #1d212a;
+      --border: #2a2f3a;
+      --text: #e8eaed;
+      --text-muted: #9aa1ac;
+      --accent: #818cf8;
+      --accent-soft: #1e213a;
+      --green-bg: #10291d;
+      --green-text: #4ade80;
+      --green-border: #1f4d34;
+      --yellow-bg: #2b2410;
+      --yellow-text: #facc15;
+      --yellow-border: #4d4319;
+      --blue-bg: #101f33;
+      --blue-text: #7ab3ff;
+      --blue-border: #1e3a5c;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.4);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0f1115;
+    --surface: #171a21;
+    --surface-hover: #1d212a;
+    --border: #2a2f3a;
+    --text: #e8eaed;
+    --text-muted: #9aa1ac;
+    --accent: #818cf8;
+    --accent-soft: #1e213a;
+    --green-bg: #10291d;
+    --green-text: #4ade80;
+    --green-border: #1f4d34;
+    --yellow-bg: #2b2410;
+    --yellow-text: #facc15;
+    --yellow-border: #4d4319;
+    --blue-bg: #101f33;
+    --blue-text: #7ab3ff;
+    --blue-border: #1e3a5c;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 1px 3px rgba(0,0,0,0.4);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  a { color: inherit; }
+
+  ::selection {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--border);
+    border-radius: 999px;
+    border: 2px solid var(--bg);
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); background-clip: padding-box; }
+  * { scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+
+  .navbar {
+    flex: 0 0 auto;
+    position: relative;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 13px 24px;
+    background: color-mix(in srgb, var(--surface) 82%, transparent);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 1px 0 rgba(0,0,0,0), var(--shadow);
+    transition: box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .navbar.scrolled {
+    box-shadow: 0 4px 16px rgba(16,24,40,0.08);
+  }
+
+  .nav-links {
+    position: relative;
+    display: flex;
+    gap: 2px;
+    flex: 1;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+
+  .nav-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-radius: 8px;
+    background: var(--accent-soft);
+    transition: transform 0.32s cubic-bezier(0.65, 0, 0.35, 1), width 0.32s cubic-bezier(0.65, 0, 0.35, 1);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .nav-links a {
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color 0.2s ease;
+  }
+
+  .nav-links a:hover {
+    color: var(--text);
+  }
+
+  .nav-links a.active {
+    color: var(--accent);
+  }
+
+  .theme-toggle {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    border-radius: 8px;
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-left: 8px;
+    transition: background 0.15s ease, transform 0.15s ease, border-color 0.15s ease;
+  }
+  .theme-toggle:hover { background: var(--surface-hover); border-color: color-mix(in srgb, var(--accent) 35%, var(--border)); }
+  .theme-toggle:active { transform: scale(0.92); }
+
+  .week-viewport {
+    position: relative;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: hidden;
+    z-index: 1;
+    perspective: 1400px;
+  }
+
+  .week-track {
+    display: flex;
+    height: 100%;
+    width: 300vw;
+    transition: transform 0.55s cubic-bezier(0.65, 0, 0.35, 1);
+    will-change: transform;
+  }
+
+  .week-panel {
+    width: 100vw;
+    flex: 0 0 100vw;
+    height: 100%;
+    overflow-y: auto;
+    padding: 44px 24px 72px;
+    opacity: 0.35;
+    transform: scale(0.94);
+    filter: saturate(0.6) blur(1px);
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.65, 0, 0.35, 1), filter 0.5s ease;
+  }
+
+  .week-panel.active {
+    opacity: 1;
+    transform: scale(1);
+    filter: none;
+  }
+
+  .week-panel > .week-inner {
+    max-width: 880px;
+    margin: 0 auto;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .week-track { transition: none; }
+    .week-panel {
+      transition: opacity 0.2s ease;
+      transform: none;
+      filter: none;
+    }
+  }
+
+  .bg-decor {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .bg-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 44px 44px;
+    opacity: 0.35;
+    mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 15%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 15%, transparent 75%);
+  }
+
+  .bg-glow {
+    position: absolute;
+    top: -260px;
+    left: 50%;
+    width: 900px;
+    height: 520px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, var(--accent), transparent 70%);
+    opacity: 0.16;
+    filter: blur(60px);
+    animation: glow-breathe 10s ease-in-out infinite;
+  }
+
+  @keyframes glow-breathe {
+    0%, 100% { opacity: 0.14; }
+    50% { opacity: 0.22; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-glow { animation: none; }
+    html { scroll-behavior: auto; }
+  }
+
+  section.week h2 {
+    font-size: 24px;
+    font-weight: 800;
+    margin: 0 0 24px;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  section.week h2::before {
+    content: "";
+    width: 5px;
+    height: 22px;
+    background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent) 40%, transparent));
+    border-radius: 3px;
+  }
+
+  section.week h2 .week-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 3px 9px;
+    border-radius: 999px;
+    letter-spacing: 0;
+  }
+
+  .group {
+    margin-bottom: 26px;
+  }
+
+  .group-title {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+
+  .group-title .group-count {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    background: var(--surface-hover);
+    padding: 1px 7px;
+    border-radius: 999px;
+    letter-spacing: 0;
+  }
+
+  .card-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .ticket-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 15px 18px 15px 20px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.25s ease, border-color 0.2s ease, box-shadow 0.25s ease;
+    overflow: hidden;
+  }
+
+  .ticket-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--border);
+    transition: background 0.2s ease;
+  }
+
+  .ticket-card:has(.badge.done)::before { background: var(--green-border); }
+  .ticket-card:has(.badge.review)::before { background: var(--yellow-border); }
+  .ticket-card:has(.badge.progress)::before { background: var(--blue-border); }
+
+  .ticket-card.in-view {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .ticket-card:hover {
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px -8px color-mix(in srgb, var(--accent) 25%, transparent), var(--shadow);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticket-card {
+      opacity: 1;
+      transform: none;
+      transition: border-color 0.12s ease;
+    }
+  }
+
+  .badge {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 999px;
+    border: 1px solid;
+    white-space: nowrap;
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+
+  .badge::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+
+  .badge.done { background: var(--green-bg); color: var(--green-text); border-color: var(--green-border); }
+  .badge.review { background: var(--yellow-bg); color: var(--yellow-text); border-color: var(--yellow-border); }
+  .badge.progress { background: var(--blue-bg); color: var(--blue-text); border-color: var(--blue-border); }
+
+  .ticket-desc {
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text);
+    padding-top: 1px;
+  }
+
+  .ticket-desc code {
+    background: var(--surface-hover);
+    border: 1px solid var(--border);
+    padding: 1.5px 6px;
+    border-radius: 5px;
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 12.5px;
+  }
+
+  .ticket-desc a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration-color: color-mix(in srgb, var(--accent) 35%, transparent);
+    text-underline-offset: 2px;
+    transition: text-decoration-color 0.15s ease;
+  }
+
+  .ticket-desc a:hover {
+    text-decoration-color: var(--accent);
+  }
+
+  footer {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 12.5px;
+    padding: 32px 24px 40px;
+    border-top: 1px solid var(--border);
+    margin-top: 16px;
+  }
+
+  .back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text-muted);
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 15;
+    opacity: 0;
+    transform: translateY(8px) scale(0.9);
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease, background 0.15s ease, color 0.15s ease;
+  }
+
+  .back-to-top.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    pointer-events: auto;
+  }
+
+  .back-to-top:hover {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  }
+
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-links" id="navLinks">
+    <span class="nav-indicator" id="navIndicator"></span>
+    <a href="#week-3">Week 3</a>
+    <a href="#week-2">Week 2</a>
+    <a href="#week-1">Week 1</a>
+  </div>
+  <button class="theme-toggle" id="themeToggle" title="Toggle theme" aria-label="Toggle theme">🌓</button>
+</nav>
+
+<div class="bg-decor" aria-hidden="true">
+  <span class="bg-grid"></span>
+  <span class="bg-glow"></span>
+</div>
+
+<div class="week-viewport" id="weekViewport">
+  <div class="week-track" id="weekTrack">
+
+    <section class="week week-panel active" id="week-3">
+      <div class="week-inner">
+        <h2>Week 3</h2>
+
+        <div class="group">
+          <div class="group-title">✅ Completed</div>
+          <div class="card-list">
+            <div class="ticket-card"><span class="badge done">BILL-441</span><div class="ticket-desc">Wallet balance exhaustion moved to invoice adjustment, reducing load on Portal-API.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-426</span><div class="ticket-desc">Billing and RPM test cases now run automatically, with Slack notifications on completion. Triggered after RC-cut, before PROD deploy — no manual effort required.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-117</span><div class="ticket-desc">Billing jobs now run on one dedicated worker instead of every server copy, so scaling servers no longer multiplies the load.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-79</span><div class="ticket-desc">Media usage now checks the account's real wallet balance and hold status directly, instead of relying on a per-key flag that could go stale.</div></div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-title">🔍 In Code Review</div>
+          <div class="card-list">
+            <div class="ticket-card"><span class="badge review">BILL-458</span><div class="ticket-desc"><code>postpaid_invoices.tax_usd</code> never backfilled — always shows <code>$0.00</code> even when Stripe charges real tax.</div></div>
+          </div>
+        </div>
+
+        <div class="group">
+          <div class="group-title">🚧 In Progress</div>
+          <div class="card-list">
+            <div class="ticket-card"><span class="badge progress">BILL-122</span><div class="ticket-desc">Spend report should account for free-credit usage in the monthly reports.</div></div>
+            <div class="ticket-card"><span class="badge progress">BILL-461</span><div class="ticket-desc"><strong>Kafka Setup — POC</strong> — <a href="https://linear.app/flexai/issue/BILL-461/kafka-poc" target="_blank" rel="noopener">Linear issue</a></div></div>
+          </div>
+        </div>
+
+        <footer>Updated weekly · use the navbar, arrow keys, or swipe to switch weeks</footer>
+      </div>
+    </section>
+
+    <section class="week week-panel" id="week-2">
+      <div class="week-inner">
+        <h2>Week 2</h2>
+
+        <div class="group">
+          <div class="group-title">✅ Done</div>
+          <div class="card-list">
+            <div class="ticket-card"><span class="badge done">BILL-422</span><div class="ticket-desc">Suppress <code>KeyAbusePatternDetected</code> alerts for automation users.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-140</span><div class="ticket-desc">Token service: consume stored FlexAI price from artifacts instead.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-75</span><div class="ticket-desc">Fix stale tax zone on postpaid invoice charges after a billing cycle.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-148</span><div class="ticket-desc">Activate postpaid usage billing (Layer 1 wire loop) — enable flags in staging.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-150</span><div class="ticket-desc">Revenue tracker: pending optimizations.</div></div>
+            <div class="ticket-card"><span class="badge done">BILL-88</span><div class="ticket-desc">Add postpaid usage option to billing page (behind feature flag).</div></div>
+          </div>
+        </div>
+
+        <footer>Updated weekly · use the navbar, arrow keys, or swipe to switch weeks</footer>
+      </div>
+    </section>
+
+    <section class="week week-panel" id="week-1">
+      <div class="week-inner">
+        <h2>Week 1</h2>
+
+        <div class="group">
+          <div class="group-title">✅ Done</div>
+          <div class="card-list">
+            <div class="ticket-card"><span class="badge done">ENG-1904</span><div class="ticket-desc"><strong>Bypass Topup With 0.5 USD</strong> — Fixed: <code>Team QA Prod Automation's Workspace</code> user can only recharge 0.5 USD, closing a bypass around costly recharges used for testing.</div></div>
+            <div class="ticket-card"><span class="badge done">ENG-1823</span><div class="ticket-desc"><strong>RPM Improvement — Audio &amp; Image Use Key's RPM</strong> — Audio and image endpoints now read the key's configured <code>rpm_limit</code> instead of falling back to the tier-default constant of 100 RPM. Elevated quotas set by admins now apply uniformly across chat, audio, and image requests on a shared key.</div></div>
+            <div class="ticket-card"><span class="badge done">ENG-1860</span><div class="ticket-desc"><strong>Admin UI Showed Archived Orgs</strong> — Fixed: Admin → Users no longer shows archived orgs; the view is much cleaner now.</div></div>
+            <div class="ticket-card"><span class="badge done">ENG-1903</span><div class="ticket-desc"><strong>Admin UI Orgs Showed Hardcoded 100 Rows</strong> — Added pagination: Admin Orgs is now paginated for a better user experience.</div></div>
+            <div class="ticket-card"><span class="badge done">ENG-1691</span><div class="ticket-desc">Current status: <a href="https://tokens.flex.ai/admin" target="_blank" rel="noopener">tokens.flex.ai/admin</a> · Bug: <a href="https://github.com/sray-flex-ai/ENG_1691_Data" target="_blank" rel="noopener">ENG_1691_Data</a> · Fixed status: <a href="https://tokens-dev.flexsystems.ai/admin" target="_blank" rel="noopener">tokens-dev.flexsystems.ai/admin</a></div></div>
+            <div class="ticket-card"><span class="badge done">BILL-149</span><div class="ticket-desc"><strong>Billing and RPM Test Automation</strong> — Current status: <a href="https://github.com/flexaihq/automation/actions/workflows/token-service-billing-rpm-tests.yml" target="_blank" rel="noopener">workflow</a> · Sample run: <a href="https://github.com/flexaihq/automation/actions/runs/30251555196/job/89930512176#logs" target="_blank" rel="noopener">logs</a> · Sample test: <code>test_partial_refund_reduces_balance_by_exactly_the_refunded_amount</code></div></div>
+          </div>
+        </div>
+
+        <footer>Updated weekly · use the navbar, arrow keys, or swipe to switch weeks</footer>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<button class="back-to-top" id="backToTop" title="Scroll panel to top" aria-label="Scroll panel to top">↑</button>
+
+<script>
+  (function () {
+    document.querySelectorAll('section.week').forEach(function (section) {
+      var count = section.querySelectorAll('.ticket-card').length;
+      var h2 = section.querySelector('h2');
+      if (h2) {
+        var span = document.createElement('span');
+        span.className = 'week-count';
+        span.textContent = count + (count === 1 ? ' ticket' : ' tickets');
+        h2.appendChild(span);
+      }
+    });
+    document.querySelectorAll('.group').forEach(function (group) {
+      var count = group.querySelectorAll('.ticket-card').length;
+      var title = group.querySelector('.group-title');
+      if (title) {
+        var span = document.createElement('span');
+        span.className = 'group-count';
+        span.textContent = count;
+        title.appendChild(span);
+      }
+    });
+  })();
+
+  (function () {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var cards = document.querySelectorAll('.ticket-card');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry, i) {
+        if (entry.isIntersecting) {
+          entry.target.style.transitionDelay = (i % 6) * 60 + 'ms';
+          entry.target.classList.add('in-view');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    cards.forEach(function (c) { io.observe(c); });
+  })();
+
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.getElementById('themeToggle');
+    try {
+      var saved = localStorage.getItem('theme');
+      if (saved) root.setAttribute('data-theme', saved);
+    } catch (e) {}
+
+    toggle.addEventListener('click', function () {
+      var current = root.getAttribute('data-theme');
+      var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var isDark = current ? current === 'dark' : prefersDark;
+      var next = isDark ? 'light' : 'dark';
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem('theme', next); } catch (e) {}
+    });
+
+    var navbar = document.querySelector('.navbar');
+    var indicator = document.getElementById('navIndicator');
+    var backToTop = document.getElementById('backToTop');
+    var track = document.getElementById('weekTrack');
+    var viewport = document.getElementById('weekViewport');
+    var links = Array.prototype.slice.call(document.querySelectorAll('#navLinks a'));
+    var panels = links.map(function (l) { return document.querySelector(l.getAttribute('href')); });
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var activeIndex = 0;
+
+    function moveIndicator(link) {
+      if (!link || !indicator) return;
+      indicator.style.width = link.offsetWidth + 'px';
+      indicator.style.transform = 'translateX(' + link.offsetLeft + 'px)';
+    }
+
+    function watchPanelScroll(panel) {
+      if (panel.dataset.watched) return;
+      panel.dataset.watched = '1';
+      panel.addEventListener('scroll', function () {
+        if (panel !== panels[activeIndex]) return;
+        navbar.classList.toggle('scrolled', panel.scrollTop > 8);
+        if (backToTop) backToTop.classList.toggle('visible', panel.scrollTop > 400);
+      }, { passive: true });
+    }
+    panels.forEach(watchPanelScroll);
+
+    function goTo(index) {
+      if (index < 0 || index >= panels.length || index === activeIndex) return;
+      activeIndex = index;
+      track.style.transform = 'translateX(-' + (index * 100) + 'vw)';
+      links.forEach(function (l, i) { l.classList.toggle('active', i === index); });
+      panels.forEach(function (p, i) { p.classList.toggle('active', i === index); });
+      moveIndicator(links[index]);
+      var panel = panels[index];
+      navbar.classList.toggle('scrolled', panel.scrollTop > 8);
+      if (backToTop) backToTop.classList.toggle('visible', panel.scrollTop > 400);
+    }
+
+    links.forEach(function (link, i) {
+      link.addEventListener('click', function (e) {
+        e.preventDefault();
+        goTo(i);
+      });
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') goTo(activeIndex + 1);
+      if (e.key === 'ArrowLeft') goTo(activeIndex - 1);
+    });
+
+    if (viewport) {
+      var touchStartX = 0, touchStartY = 0, touching = false;
+      viewport.addEventListener('touchstart', function (e) {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touching = true;
+      }, { passive: true });
+      viewport.addEventListener('touchend', function (e) {
+        if (!touching) return;
+        touching = false;
+        var dx = e.changedTouches[0].clientX - touchStartX;
+        var dy = e.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+          if (dx < 0) goTo(activeIndex + 1); else goTo(activeIndex - 1);
+        }
+      }, { passive: true });
+    }
+
+    moveIndicator(links[activeIndex]);
+    window.addEventListener('resize', function () { moveIndicator(links[activeIndex]); });
+
+    if (backToTop) {
+      backToTop.addEventListener('click', function () {
+        panels[activeIndex].scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+      });
+    }
+  })();
+</script>
+
+</body>
+</html>
