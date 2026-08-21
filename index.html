@@ -529,12 +529,6 @@
             <div class="ticket-card"><span class="badge done">BILL-426</span><div class="ticket-desc">Billing and RPM test cases now run automatically, with Slack notifications on completion. Triggered after RC-cut, before PROD deploy — no manual effort required.</div></div>
             <div class="ticket-card"><span class="badge done">BILL-117</span><div class="ticket-desc">Billing jobs now run on one dedicated worker instead of every server copy, so scaling servers no longer multiplies the load.</div></div>
             <div class="ticket-card"><span class="badge done">BILL-79</span><div class="ticket-desc">Media usage now checks the account's real wallet balance and hold status directly, instead of relying on a per-key flag that could go stale.</div></div>
-          </div>
-        </div>
-
-        <div class="group">
-          <div class="group-title">🔍 In Code Review</div>
-          <div class="card-list">
             <div class="ticket-card"><span class="badge review">BILL-458</span><div class="ticket-desc"><code>postpaid_invoices.tax_usd</code> never backfilled — always shows <code>$0.00</code> even when Stripe charges real tax.</div></div>
           </div>
         </div>
